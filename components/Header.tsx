@@ -171,52 +171,14 @@ export function Header() {
                   Home
                 </Link>
                 
-                <div className="relative">
-                  <button
-                    onClick={() => setMobileDropdownOpen(!mobileDropdownOpen)}
-                    className={`group flex w-full items-center rounded-md px-3 py-2 text-base font-medium ${mobileDropdownOpen ? 'bg-accent text-accent-foreground' : 'text-foreground hover:bg-accent hover:text-accent-foreground'}`}
-                    aria-expanded={mobileDropdownOpen}
-                    aria-controls="mobile-services-dropdown"
-                  >
-                    <span className="flex items-center">
-                      <Info className="mr-3 h-5 w-5 flex-shrink-0" />
-                      Services
-                    </span>
-                    <svg 
-                      className={`ml-auto h-5 w-5 transform transition-transform duration-200 ${mobileDropdownOpen ? 'rotate-180' : ''}`} 
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  
-                  <AnimatePresence>
-                    {mobileDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="overflow-hidden"
-                      >
-                        <div id="mobile-services-dropdown" className="ml-4 mt-1 space-y-1 border-l-2 border-border pl-3">
-                          {customPages.map((page: any) => (
-                            <Link
-                              key={page.id}
-                              href={`/page/${page.slug}`}
-                              className={`block rounded-md px-3 py-2 text-sm font-medium ${pathname === `/page/${page.slug}` ? 'text-primary' : 'text-foreground hover:text-primary'}`}
-                              onClick={toggle}
-                            >
-                              {page.title}
-                            </Link>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                <Link
+                  href="/products"
+                  className={`group flex items-center rounded-md px-3 py-2 text-base font-medium ${pathname === '/products' ? 'bg-accent text-accent-foreground' : 'text-foreground hover:bg-accent hover:text-accent-foreground'}`}
+                  onClick={toggle}
+                >
+                  <Info className="mr-3 h-5 w-5 flex-shrink-0" />
+                  Products
+                </Link>
 
                 <Link
                   href="/about"
