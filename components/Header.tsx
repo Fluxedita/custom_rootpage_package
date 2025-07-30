@@ -151,43 +151,90 @@ export function Header() {
           </div>
         </div>
       </div>
-      {isOpen && (
-        <div className="fixed inset-0 top-14 z-50 grid h-[calc(100vh-4rem)] grid-flow-row auto-rows-fr overflow-auto p-6 pb-32 md:hidden">
-          <div className="relative z-20 grid gap-6 rounded-lg bg-popover p-4 text-popover-foreground shadow-md">
-            <nav className="grid grid-flow-row auto-rows-96 text-sm">
-              <div className="relative"
-                onMouseEnter={handleMobileDropdownEnter}
-                onMouseLeave={handleMobileDropdownLeave}
-              >
-                <button
-                  className="flex w-full items-center rounded-md p-2 text-sm font-medium hover:underline"
-                  onClick={() => setMobileDropdownOpen((v) => !v)}
-                  type="button"
-                  aria-expanded={mobileDropdownOpen}
-                  aria-controls="mobile-services-dropdown"
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-x-0 top-14 z-50 bg-background shadow-lg md:hidden"
+          >
+            <div className="border-t border-border">
+              <nav className="space-y-1 px-2 py-3">
+                <Link
+                  href="/"
+                  className={`group flex items-center rounded-md px-3 py-2 text-base font-medium ${pathname === '/' ? 'bg-accent text-accent-foreground' : 'text-foreground hover:bg-accent hover:text-accent-foreground'}`}
+                  onClick={toggle}
                 >
-                  Services
-                  <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
-                </button>
-                {mobileDropdownOpen && (
-                  <div
-                    id="mobile-services-dropdown"
-                    className="mt-2 ml-2 min-w-[160px] rounded-md bg-white shadow-lg border dark:bg-background"
-                  >
-                    {/* Removed: Gallery, Exclusive, Behind Scenes, and custom pages links */}
+                  <Heart className="mr-3 h-5 w-5 flex-shrink-0" />
+                  Home
+                </Link>
+                
+                <Link
+                  href="/products"
+                  className={`group flex items-center rounded-md px-3 py-2 text-base font-medium ${pathname === '/products' ? 'bg-accent text-accent-foreground' : 'text-foreground hover:bg-accent hover:text-accent-foreground'}`}
+                  onClick={toggle}
+                >
+                  <Info className="mr-3 h-5 w-5 flex-shrink-0" />
+                  Products
+                </Link>
+
+                <Link
+                  href="/about"
+                  className={`group flex items-center rounded-md px-3 py-2 text-base font-medium ${pathname === '/about' ? 'bg-accent text-accent-foreground' : 'text-foreground hover:bg-accent hover:text-accent-foreground'}`}
+                  onClick={toggle}
+                >
+                  <Info className="mr-3 h-5 w-5 flex-shrink-0" />
+                  About
+                </Link>
+
+                <Link
+                  href="/contact"
+                  className={`group flex items-center rounded-md px-3 py-2 text-base font-medium ${pathname === '/contact' ? 'bg-accent text-accent-foreground' : 'text-foreground hover:bg-accent hover:text-accent-foreground'}`}
+                  onClick={toggle}
+                >
+                  <Info className="mr-3 h-5 w-5 flex-shrink-0" />
+                  Contact
+                </Link>
+              </nav>
+              
+              <div className="border-t border-border p-4">
+                {user ? (
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm font-medium text-foreground">
+                      {user.email}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        handleSignOut();
+                        toggle();
+                      }}
+                      className="w-full"
+                    >
+                      Sign Out
+                    </Button>
                   </div>
+                ) : (
+                  <Button
+                    variant="default"
+                    size="sm"
+                    className="w-full"
+                    onClick={() => {
+                      router.push('/auth/login');
+                      toggle();
+                    }}
+                  >
+                    Sign In
+                  </Button>
                 )}
               </div>
-              <Link
-                href="/about"
-                className="flex w-full items-center rounded-md p-2 text-sm font-medium hover:underline"
-              >
-                About
-              </Link>
-            </nav>
-          </div>
-        </div>
-      )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }

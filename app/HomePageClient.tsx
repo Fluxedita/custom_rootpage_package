@@ -41,7 +41,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { SliderSectionType } from "@/app/custom_pages/types/sections"
 import supabase from '@/lib/supabase/client'
 import { Section, InfoCard } from "@/app/custom_pages/types/sections"
-import { PageControls } from "@/app/custom_pages/components/PageControls"
+import { PageControls, PageProperties } from "@/app/custom_pages/components/PageControls"
 import { MediaTextSection as MediaTextSectionType } from "@/app/custom_pages/types/sections"
 import { FeatureSection as FeatureSectionType } from "@/app/custom_pages/types/sections"
 import MediaLibrary from '@/components/media/MediaLibrary'
@@ -51,6 +51,7 @@ import FluxeditaAdvancedFormSection from '@/app/custom_contact_section/Fluxedita
 import { Mail } from 'lucide-react';
 import CustomCodeSection from '@/app/custom_code_section/CustomCodeSection';
 import CustomCodeSectionEditor from '@/app/custom_code_section/CustomCodeSectionEditor';
+import EditableTitleSection from '@/components/sections/EditableTitleSection';
 
 // Section type for home page
 type HomeSectionType =
@@ -214,6 +215,7 @@ export default function HomePageClient() {
     pageTitle: 'Home Page',
     metaDescription: '',
     language: 'en',
+    showMoreEnabled: true,
   })
 
   // Slider section state for hero area
@@ -428,10 +430,19 @@ export default function HomePageClient() {
     }
   };
 
-  const handlePagePropertiesChange = (newProperties: any) => {
-    setPageProperties(newProperties)
-    setIsDirty(true)
-  }
+  const handlePagePropertiesChange = (properties: Partial<PageProperties>) => {
+    setPageProperties(prev => {
+      // If showMoreEnabled is being turned off, reset visibleCount to show all sections
+      if (prev.showMoreEnabled && properties.showMoreEnabled === false) {
+        setVisibleCount(1000); // A high number to ensure all sections are shown
+      }
+      return {
+        ...prev,
+        ...properties
+      };
+    });
+    setIsDirty(true);
+  };
 
   // Generate styles from page properties
   const getPageStyles = () => {
@@ -833,7 +844,7 @@ export default function HomePageClient() {
           formMethod: 'POST',
           fields: [
             { id: 'name', name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name' },
-            { id: 'email', name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'you@example.com' },
+            { id: 'email', name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'jamescroanin@gmail.com' },
             { id: 'message', name: 'message', label: 'Message', type: 'textarea', required: true, placeholder: 'Your message' },
           ],
         };
@@ -1056,6 +1067,29 @@ export default function HomePageClient() {
           verticalPadding: 0,
         };
         break;
+      case 'heading':
+        newSection = {
+          id,
+          type: 'heading',
+          text: 'New Heading',
+          level: 'h2',
+          alignment: 'center',
+          fontSize: '2rem',
+          fontColor: '#222',
+          enableSpeech: false,
+          visible: true,
+        };
+        break;
+      case 'editable-title':
+        newSection = {
+          id,
+          type: 'editable-title',
+          title: 'New Page Title',
+          slug: 'new-page-title',
+          visible: true,
+          enableSpeech: false,
+        };
+        break;
       default:
         return;
     }
@@ -1097,6 +1131,8 @@ export default function HomePageClient() {
 
   console.log('Home page rendering with data:', { heroImage, aboutMedia, freeContentImage })
 
+  const [visibleCount, setVisibleCount] = useState(30);
+
   return (
     <main className="min-h-screen" style={getPageStyles()}>
       {/* Floating admin button for opening PageControls */}
@@ -1133,7 +1169,7 @@ export default function HomePageClient() {
       )}
 
       {/* Render all sections dynamically */}
-      {sections.map((section, idx) => {
+      {sections.slice(0, visibleCount).map((section, idx) => {
         const isFullWidth = (section as any).width === '100vw';
         return (
           <section
@@ -1346,6 +1382,12 @@ export default function HomePageClient() {
                             setSections(newSections);
                             setIsDirty(true);
                           }}
+                          onDuplicate={(duplicatedSection) => {
+                            const newSections = [...sections];
+                            newSections.splice(idx + 1, 0, duplicatedSection);
+                            setSections(newSections);
+                            setIsDirty(true);
+                          }}
                           idx={idx}
                           renderSectionControls={() => null}
                         />
@@ -1628,7 +1670,7 @@ export default function HomePageClient() {
                         <ProductPackageLeftSection
                           section={productPackageLeftSection}
                           isEditMode={isEditMode && !previewMode}
-                          onSectionChange={s => {
+                          onSectionChangeAction={s => {
                             const newSections = [...sections];
                             newSections[idx] = s as Section;
                             setSections(newSections);
@@ -1653,6 +1695,40 @@ export default function HomePageClient() {
                             }}
                           />
                         </div>
+                      );
+                      break;
+                    }
+                    case 'heading':
+                      const headingSection = section as any;
+                      renderedSection = (
+                        <HeadingSection
+                          section={headingSection}
+                          isEditMode={isEditMode && !previewMode}
+                          onSectionChange={s => {
+                            const newSections = [...sections];
+                            newSections[idx] = s as Section;
+                            setSections(newSections);
+                            setIsDirty(true);
+                          }}
+                          speakText={() => {}}
+                          idx={idx}
+                          renderSectionControls={() => null}
+                        />
+                      );
+                      break;
+                    case 'editable-title': {
+                      const editableTitleSection = section as any;
+                      renderedSection = (
+                        <EditableTitleSection
+                          section={editableTitleSection}
+                          isEditMode={isEditMode && !previewMode}
+                          onChange={update => {
+                            const newSections = [...sections];
+                            newSections[idx] = { ...sections[idx], ...update };
+                            setSections(newSections);
+                            setIsDirty(true);
+                          }}
+                        />
                       );
                       break;
                     }
@@ -1863,6 +1939,12 @@ export default function HomePageClient() {
                             setSections(newSections);
                             setIsDirty(true);
                           }}
+                          onDuplicate={(duplicatedSection) => {
+                            const newSections = [...sections];
+                            newSections.splice(idx + 1, 0, duplicatedSection);
+                            setSections(newSections);
+                            setIsDirty(true);
+                          }}
                           idx={idx}
                           renderSectionControls={() => null}
                         />
@@ -2145,7 +2227,7 @@ export default function HomePageClient() {
                         <ProductPackageLeftSection
                           section={productPackageLeftSection}
                           isEditMode={isEditMode && !previewMode}
-                          onSectionChange={s => {
+                          onSectionChangeAction={s => {
                             const newSections = [...sections];
                             newSections[idx] = s as Section;
                             setSections(newSections);
@@ -2173,6 +2255,40 @@ export default function HomePageClient() {
                       );
                       break;
                     }
+                    case 'heading':
+                      const headingSection = section as any;
+                      renderedSection = (
+                        <HeadingSection
+                          section={headingSection}
+                          isEditMode={isEditMode && !previewMode}
+                          onSectionChange={s => {
+                            const newSections = [...sections];
+                            newSections[idx] = s as Section;
+                            setSections(newSections);
+                            setIsDirty(true);
+                          }}
+                          speakText={() => {}}
+                          idx={idx}
+                          renderSectionControls={() => null}
+                        />
+                      );
+                      break;
+                    case 'editable-title': {
+                      const editableTitleSection = section as any;
+                      renderedSection = (
+                        <EditableTitleSection
+                          section={editableTitleSection}
+                          isEditMode={isEditMode && !previewMode}
+                          onChange={update => {
+                            const newSections = [...sections];
+                            newSections[idx] = { ...sections[idx], ...update };
+                            setSections(newSections);
+                            setIsDirty(true);
+                          }}
+                        />
+                      );
+                      break;
+                    }
                     default:
                       renderedSection = null;
                   }
@@ -2183,6 +2299,18 @@ export default function HomePageClient() {
           </section>
         );
       })}
+
+      {/* Show More Button */}
+      {(pageProperties.showMoreEnabled ?? true) && visibleCount < sections.length && (
+        <div className="flex justify-center my-8">
+          <button
+            onClick={() => setVisibleCount(c => Math.min(c + 2, sections.length))}
+            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            Show More
+          </button>
+        </div>
+      )}
 
       {/* MediaLibrary dialog for Media/Text sections */}
       {mediaDialogIdx !== null && (

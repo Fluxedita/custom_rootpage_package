@@ -1,7 +1,7 @@
 -- Comprehensive Supabase Init Script
 -- =====================================================
 -- SUPABASE FIRST INIT SCRIPT
--- Complete database setup for the portfolio application
+-- Complete database setup for the Fluxedita Custom Rootpage Package
 -- Run this script ONCE to set up a fresh database
 -- =====================================================
 
@@ -108,6 +108,18 @@ CREATE TABLE IF NOT EXISTS public.page_content (
     properties JSONB
 );
 
+-- Create composite unique constraint for page content
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'page_content_page_slug_section_type_key'
+    ) THEN
+        ALTER TABLE public.page_content 
+        ADD CONSTRAINT page_content_page_slug_section_type_key 
+        UNIQUE (page_slug, section_type);
+    END IF;
+END $$;
+
 -- Root page components table (for system/root pages)
 CREATE TABLE IF NOT EXISTS public.root_page_components (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -117,23 +129,21 @@ CREATE TABLE IF NOT EXISTS public.root_page_components (
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    created_by UUID REFERENCES auth.users(id) ON DELETE SET NULL
+    created_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+    updated_by UUID REFERENCES auth.users(id) ON DELETE SET NULL
 );
 
--- Ensure contact_data row exists for contact page (for ContactDetails section to save)
-INSERT INTO public.root_page_components (page_slug, component_type, content)
-VALUES ('contact', 'contact_data', '{"contactMethods": []}')
-ON CONFLICT (page_slug, component_type) DO NOTHING;
-
 -- Create composite unique constraint for root page components
-ALTER TABLE public.root_page_components 
-ADD CONSTRAINT root_page_components_page_slug_component_type_key 
-UNIQUE (page_slug, component_type);
-
--- Create composite unique constraint for page content
-ALTER TABLE public.page_content 
-ADD CONSTRAINT page_content_page_slug_section_type_key 
-UNIQUE (page_slug, section_type);
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'root_page_components_page_slug_component_type_key'
+    ) THEN
+        ALTER TABLE public.root_page_components 
+        ADD CONSTRAINT root_page_components_page_slug_component_type_key 
+        UNIQUE (page_slug, component_type);
+    END IF;
+END $$;
 
 -- Gallery data table
 CREATE TABLE IF NOT EXISTS public.gallery_data (

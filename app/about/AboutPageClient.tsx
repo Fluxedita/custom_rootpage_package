@@ -492,6 +492,8 @@ export default function AboutPageClient() {
           title: '',
           description: '',
           images: [],
+          url: '',
+          alt: '',
           layout: 'grid',
           enableTitleSpeech: false,
           enableDescriptionSpeech: false,
@@ -1182,7 +1184,7 @@ export default function AboutPageClient() {
         <ProductPackageLeftSection
           section={productPackageLeftSection}
           isEditMode={isEditMode && !previewMode}
-          onSectionChange={s => {
+          onSectionChangeAction={s => {
             const newSections = [...sections];
             newSections[idx] = s as Section;
             setSections(newSections);

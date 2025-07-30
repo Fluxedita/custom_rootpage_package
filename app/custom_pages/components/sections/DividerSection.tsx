@@ -143,17 +143,15 @@ export function DividerSection({ section, isEditMode, onSectionChange, idx, rend
               />
             </div>
           </div>
-          {onDuplicate && (
-            <div className="flex justify-end mt-4">
-              <button
-                type="button"
-                className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-xs font-medium"
-                onClick={handleDuplicate}
-              >
-                Duplicate
-              </button>
-            </div>
-          )}
+          <div className="flex justify-end mt-4">
+            <button
+              type="button"
+              className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded text-xs font-medium"
+              onClick={handleDuplicate}
+            >
+              Duplicate
+            </button>
+          </div>
         </div>
       </div>
     );

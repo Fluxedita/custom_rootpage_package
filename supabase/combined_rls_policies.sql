@@ -3,6 +3,16 @@
 -- This ensures compliance with Supabase/Postgres linter and optimal performance.
 
 -- FINAL Linter-Silencing RLS Policies (Fully Idempotent, One Policy per Action/Role/Table)
+
+-- USER SIDEBAR SETTINGS RLS
+ALTER TABLE public.user_sidebar_settings ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Combined: user can manage own sidebar settings" ON public.user_sidebar_settings;
+CREATE POLICY "Combined: user can manage own sidebar settings"
+  ON public.user_sidebar_settings
+  FOR ALL
+  USING (auth.uid() = user_id);
+
 -- For every CREATE POLICY, there is a matching DROP POLICY IF EXISTS with the exact same name and table immediately before it.
 -- This ensures the script is fully idempotent and prevents 'policy already exists' errors.
 -- Only one permissive policy per action/role/table remains, with admin access split as needed.

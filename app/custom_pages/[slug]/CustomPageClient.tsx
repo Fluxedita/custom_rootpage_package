@@ -14,6 +14,8 @@ import SearchParamsProvider from '@/components/providers/SearchParamsProvider';
 import { Button } from '@/components/ui/button';
 import { Pencil, Plus, Trash2, MoveUp, MoveDown, Save, Eye, ChevronRight } from 'lucide-react';
 import { useAuth } from '@/components/providers/AuthProvider';
+import PageEditFab from '@/components/admin/PageEditFab';
+import PageControlsFab from '@/components/admin/PageControlsFab';
 import { useEditMode } from '@/hooks/EditModeContext';
 import { ClientFooter } from "@/components/ClientFooter";
 import { useToast } from '@/hooks/use-toast';
@@ -123,40 +125,8 @@ export default function CustomPageClient() {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  // --- Footer visibility on scroll ---
-  const footerSentinelRef = useRef<HTMLDivElement | null>(null);
-  const [showFooter, setShowFooter] = useState(false);
-  useEffect(() => {
-    const sentinel = footerSentinelRef.current;
-    if (!sentinel) return;
-    const observer = new window.IntersectionObserver(
-      ([entry]) => setShowFooter(entry.isIntersecting),
-      { root: null, threshold: 0.01 }
-    );
-    observer.observe(sentinel);
-    return () => observer.disconnect();
-  }, []);
-  // --- End footer visibility logic ---
-
+  
   // Handle add section
-  const handleDuplicateSection = (duplicatedSection: any) => {
-    setSections(prevSections => {
-      const index = prevSections.findIndex(s => s.id === duplicatedSection.id);
-      if (index === -1) return prevSections;
-      
-      const newSection = {
-        ...duplicatedSection,
-        id: crypto.randomUUID(),
-      };
-      
-      const newSections = [...prevSections];
-      newSections.splice(index + 1, 0, newSection);
-      setIsDirty(true);
-      return newSections;
-    });
-  };
-
   const handleAddSection = (type: string) => {
     console.log('handleAddSection called with type:', type);
     console.log('Current sections before adding:', sections);
@@ -262,14 +232,23 @@ export default function CustomPageClient() {
   // Handle edit mode toggle
   const handleToggleEditMode = useCallback(() => {
     if (!isAdmin) return;
-    // Always force edit mode ON and update the URL param, so user can re-enter edit mode for editing existing sections
-    setEditMode(true);
-    setShowControls(true);
+    
+    const newEditMode = !isEditMode;
+    console.log('Toggling edit mode:', { current: isEditMode, new: newEditMode });
+    
+    // Update the edit mode state
+    setEditMode(newEditMode);
+    setShowControls(newEditMode);
+    
+    // Update URL to reflect the change
     const newSearchParams = new URLSearchParams(searchParams?.toString() ?? '');
-    newSearchParams.set('edit', 'true');
+    if (newEditMode) {
+      newSearchParams.set('edit', 'true');
+    } else {
+      newSearchParams.delete('edit');
+    }
     router.replace(`?${newSearchParams.toString()}`, { scroll: false });
-  }, [isAdmin, setEditMode, searchParams, router]); // Already correct: always enables edit mode and controls
-
+  }, [isEditMode, isAdmin, setEditMode, searchParams, router]);
 
   // Section management functions
   const handleSectionMoveUp = (sectionId: string) => {
@@ -676,7 +655,7 @@ export default function CustomPageClient() {
           formMethod: 'POST',
           fields: [
             { id: 'name', name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name' },
-            { id: 'email', name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'you@example.com' },
+            { id: 'email', name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'jamescroanin@gmail.com' },
             { id: 'message', name: 'message', label: 'Message', type: 'textarea', required: true, placeholder: 'Your message' },
           ],
           mediaUpload: false,
@@ -1155,6 +1134,8 @@ export default function CustomPageClient() {
                 title: (section as any).title || 'Gallery',
                 description: (section as any).description || '',
                 images: (section as any).images || [],
+                url: '', // Default empty string for url
+                alt: '', // Default empty string for alt
                 layout: (section as any).layout || 'grid',
                 enableTitleSpeech: (section as any).enableTitleSpeech || false,
                 enableDescriptionSpeech: (section as any).enableDescriptionSpeech || false,
@@ -1224,7 +1205,6 @@ export default function CustomPageClient() {
             section={section as any}
             isEditMode={isEditMode}
             onSectionChange={s => handleSectionChange({ ...section, ...s })}
-            onDuplicate={handleDuplicateSection}
             idx={idx}
             renderSectionControls={() => renderSectionControls(section.id)}
           />
@@ -1577,7 +1557,7 @@ export default function CustomPageClient() {
             <ProductPackageLeftSection
               section={section as any}
               isEditMode={isEditMode}
-              onSectionChange={handleSectionChange}
+              onSectionChangeAction={handleSectionChange}
             />
             {baseProps.isEditMode && (
               <div className="absolute top-2 right-2 z-10">
@@ -1856,16 +1836,24 @@ export default function CustomPageClient() {
     } as React.CSSProperties;
   };
 
-  // --- Footer visibility on scroll ---
-  // (declarations moved to top of component)
-
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <SearchParamsProvider>
         {() => (
           <div className="relative flex flex-col min-h-screen" style={getBackgroundStyles()}>
             {/* Floating Edit Buttons - Positioned at the root level */}
-            {/* PageEditFab temporarily removed as requested */}
+            {isAdmin && <PageEditFab />}
+            {/* PageControlsFab for admin */}
+            {isAdmin && (
+              <PageControlsFab
+                pageSlug={slug}
+                pageTitle={pageProperties.pageTitle}
+                isDirty={isDirty}
+                isSaving={isSaving}
+                onSave={handleSave}
+                onPagePropertiesChange={handlePagePropertiesChange}
+              />
+            )}
             {/* Background image or video */}
             <div className="fixed inset-0 -z-10">
               {pageProperties.backgroundImage && !pageProperties.backgroundVideo && (
@@ -1988,13 +1976,10 @@ export default function CustomPageClient() {
               `}</style>
             </div>
             
-            {/* Footer - Only visible when user scrolls to the bottom */}
-            <div ref={footerSentinelRef} />
-            {showFooter && (
-              <div className="w-screen">
-                <ClientFooter />
-              </div>
-            )}
+            {/* Footer - Fixed at bottom with full viewport width */}
+            <div className="fixed bottom-0 left-0 right-0 z-10 w-screen">
+              <ClientFooter />
+            </div>
 
             {/* MediaLibrary dialog for Media/Text sections */}
             {mediaDialogIdx !== null && (
