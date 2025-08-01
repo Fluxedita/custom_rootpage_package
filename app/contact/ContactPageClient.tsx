@@ -419,7 +419,7 @@ function ContactPageContent() {
                   <TwoColumnTextSection
                     section={twoColumnTextSection}
                     isEditMode={isEditMode && !previewMode}
-                    onSectionChange={s => {
+                    onSectionChangeAction={(s: import('@/app/custom_pages/types/sections').Section) => {
                       const newSections = [...sections];
                       newSections[idx] = s as Section;
                       setSections(newSections);

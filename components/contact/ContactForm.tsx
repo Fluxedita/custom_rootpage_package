@@ -33,7 +33,7 @@ export default function ContactForm({ isAuthenticated, user }: ContactFormProps)
     // Personal Details
     sharePersonalInfo: false,
     personalDetails: {
-      age: '',
+      company: '',
       city: '',
       country: '',
       occupation: '',
@@ -186,7 +186,7 @@ export default function ContactForm({ isAuthenticated, user }: ContactFormProps)
         message: '',
         sharePersonalInfo: false,
         personalDetails: {
-          age: '',
+          company: '',
           city: '',
           country: '',
           occupation: '',
@@ -292,13 +292,13 @@ export default function ContactForm({ isAuthenticated, user }: ContactFormProps)
                   {/* Personal Details Fields */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="age">Age</Label>
+                      <Label htmlFor="company">Company</Label>
                       <Input
-                        id="age"
-                        name="personalDetails.age"
-                        value={formData.personalDetails.age}
+                        id="company"
+                        name="personalDetails.company"
+                        value={formData.personalDetails.company}
                         onChange={handleChange}
-                        placeholder="Your age"
+                        placeholder="Your company"
                       />
                     </div>
                     
@@ -325,24 +325,24 @@ export default function ContactForm({ isAuthenticated, user }: ContactFormProps)
                     </div>
                     
                     <div>
-                      <Label htmlFor="occupation">Occupation</Label>
+                      <Label htmlFor="sector">Sector</Label>
                       <Input
-                        id="occupation"
-                        name="personalDetails.occupation"
+                        id="sector"
+                        name="personalDetails.sector"
                         value={formData.personalDetails.occupation}
                         onChange={handleChange}
-                        placeholder="Your profession"
+                        placeholder="Sector"
                       />
                     </div>
                   </div>
                   <div>
-                    <Label htmlFor="hobbies">Hobbies & Interests</Label>
+                    <Label htmlFor="interest">Interests</Label>
                     <Textarea
-                      id="hobbies"
+                      id="interest"
                       name="personalDetails.hobbies"
                       value={formData.personalDetails.hobbies}
                       onChange={handleChange}
-                      placeholder="Tell us about your interests, hobbies, or what you enjoy doing"
+                      placeholder="Tell us about your interested area."
                       rows={3}
                     />
                   </div>

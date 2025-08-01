@@ -1081,10 +1081,20 @@ export default function ProductsPageClient() {
                       <InfoCardSection
                         section={infoCardSection}
                         isEditMode={isEditMode && !previewMode}
-                        onSectionChange={s => {
-                          const newSections = [...sections];
-                          newSections[idx] = s as Section;
-                          setSections(newSections);
+                        onSectionChange={updatedSection => {
+                          setSections(prevSections => {
+                            const newSections = [...prevSections];
+                            // Merge the updated section with the existing section to preserve all properties
+                            newSections[idx] = {
+                              ...infoCardSection,  // Keep all existing properties
+                              ...updatedSection,   // Apply updates
+                              // Ensure the type is preserved
+                              type: 'info-card' as const,
+                              // Ensure cards array is properly handled
+                              cards: updatedSection.cards || infoCardSection.cards
+                            };
+                            return newSections;
+                          });
                           setIsDirty(true);
                         }}
                       />
@@ -1204,9 +1214,9 @@ export default function ProductsPageClient() {
                       <TwoColumnTextSection
                         section={twoColumnTextSection}
                         isEditMode={isEditMode && !previewMode}
-                        onSectionChange={s => {
+                        onSectionChangeAction={(s: Section) => {
                           const newSections = [...sections];
-                          newSections[idx] = s as Section;
+                          newSections[idx] = s;
                           setSections(newSections);
                           setIsDirty(true);
                         }}

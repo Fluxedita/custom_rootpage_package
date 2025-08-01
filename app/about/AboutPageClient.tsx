@@ -76,8 +76,8 @@ const INITIAL_SECTIONS: Section[] = [
   {
     id: 'about-hero-responsive',
     type: 'hero-responsive',
-    title: 'About Me',
-    description: 'Get to know me better',
+    title: 'About Our Company',
+    description: 'Learn More about our company here',
     buttonText: '',
     buttonUrl: '',
     backgroundImage: '',
@@ -1243,9 +1243,9 @@ case 'media-placeholder': {
                         <TwoColumnTextSection
                           section={twoColumnTextSection}
                           isEditMode={isEditMode && !previewMode}
-                          onSectionChange={s => {
+                          onSectionChangeAction={(s: Section) => {
                             const newSections = [...sections];
-                            newSections[idx] = s as Section;
+                            newSections[idx] = s;
                             setSections(newSections);
                             setIsDirty(true);
                           }}

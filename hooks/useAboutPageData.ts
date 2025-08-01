@@ -40,8 +40,8 @@ interface AboutPageContent {
 const defaultHeroSection: HeroSectionType = {
   id: 'about-hero',
   type: 'hero',
-  title: "About Me",
-  description: "Get to know the person behind the content",
+  title: "About Your Company",
+  description: "Give a detailed description of your company",
   backgroundMedia: "/placeholder.svg?height=1080&width=1920",
   mediaType: 'image',
   width: '100%',
@@ -54,36 +54,36 @@ const defaultHeroSection: HeroSectionType = {
 const defaultProfile: AboutProfile = {
   image: "/placeholder.svg?height=1000&width=800",
   imageType: 'image',
-  title: "This is the Default Abour Page",
-  description: "This is the default about page, you can edit this page by clicking the edit buttons available in the page, when logged in as the admin user.",
+  title: "About Your Company",
+  description: "Give a detailed description of your company",
   socialLinks: {
     instagram: "https://instagram.com",
     twitter: "https://twitter.com",
-    email: "contact@example.com"
+    email: "example@example.com"
   }
 };
 
 const defaultStory: AboutStory = {
-  title: "This is the Default About Page",
-  description: "This is the default about page, you can edit this page by clicking the edit buttons available in the page, when logged in as the admin user.",
+  title: "About Your Company",
+  description: "Give a detailed description of your company",
   items: [
     {
       image: "/placeholder.svg?height=600&width=800",
       imageType: 'image',
-      title: "This is the Default About Page",
-      description: "This is the default about page, you can edit this page by clicking the edit buttons available in the page, when logged in as the admin user."
+      title: "About Your Company",
+      description: "Give a detailed description of your company"
     },
     {
       image: "/placeholder.svg?height=600&width=800",
       imageType: 'image',
-      title: "This is the Default About Page",
-      description: "This is the default about page, you can edit this page by clicking the edit buttons available in the page, when logged in as the admin user."
+      title: "About Your Company",
+      description: "Give a detailed description of your company"
     },
     {
       image: "/placeholder.svg?height=600&width=800",
       imageType: 'image',
-      title: "Today",
-      description: "Creating content full-time and sharing my passion with the world."
+      title: "About Your Company",
+      description: "Give a detailed description of your company"
     }
   ]
 };

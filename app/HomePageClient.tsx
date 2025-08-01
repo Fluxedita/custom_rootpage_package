@@ -1241,7 +1241,7 @@ export default function HomePageClient() {
                             section={heroResponsiveSection}
                             isEditMode={isEditMode && !previewMode}
                             idx={idx}
-                            onSectionChangeAction={s => {
+                            onSectionChangeAction={(s: Section) => {
                               const newSections = [...sections];
                               newSections[idx] = s as Section;
                               setSections(newSections);
@@ -1515,7 +1515,7 @@ export default function HomePageClient() {
                           <TwoColumnTextSection
                             section={twoColumnTextSection}
                             isEditMode={isEditMode && !previewMode}
-                            onSectionChange={s => {
+                            onSectionChangeAction={(s: Section) => {
                               const newSections = [...sections];
                               newSections[idx] = s as Section;
                               setSections(newSections);
@@ -1687,7 +1687,7 @@ export default function HomePageClient() {
                           <ProductPackageRightSection
                             section={productPackageRightSection}
                             isEditMode={isEditMode && !previewMode}
-                            onSectionChangeAction={s => {
+                            onSectionChangeAction={(s: Section) => {
                               const newSections = [...sections];
                               newSections[idx] = s as Section;
                               setSections(newSections);
@@ -1798,7 +1798,7 @@ export default function HomePageClient() {
                             section={heroResponsiveSection}
                             isEditMode={isEditMode && !previewMode}
                             idx={idx}
-                            onSectionChangeAction={s => {
+                            onSectionChangeAction={(s: Section) => {
                               const newSections = [...sections];
                               newSections[idx] = s as Section;
                               setSections(newSections);
@@ -2072,7 +2072,7 @@ export default function HomePageClient() {
                           <TwoColumnTextSection
                             section={twoColumnTextSection}
                             isEditMode={isEditMode && !previewMode}
-                            onSectionChange={s => {
+                            onSectionChangeAction={(s: Section) => {
                               const newSections = [...sections];
                               newSections[idx] = s as Section;
                               setSections(newSections);
@@ -2244,7 +2244,7 @@ export default function HomePageClient() {
                           <ProductPackageRightSection
                             section={productPackageRightSection}
                             isEditMode={isEditMode && !previewMode}
-                            onSectionChangeAction={s => {
+                            onSectionChangeAction={(s: Section) => {
                               const newSections = [...sections];
                               newSections[idx] = s as Section;
                               setSections(newSections);

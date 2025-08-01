@@ -211,8 +211,8 @@ export interface GallerySection extends BaseSection {
   title: string;
   description: string;
   images: { url: string; alt: string }[];
-  url: string;
-  alt: string;
+  url?: string;
+  alt?: string;
   backgroundImage?: string;
   layout: 'grid' | 'masonry' | 'carousel';
   enableTitleSpeech: boolean;

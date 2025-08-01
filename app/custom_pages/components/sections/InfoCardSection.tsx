@@ -162,32 +162,31 @@ export const InfoCardSection: React.FC<Props> = ({ section, isEditMode, onSectio
           WebkitBackdropFilter: `blur(${section.backgroundBlur || '8px'})`,
         }}
       />
-      {/* Main Title/Description overlay, only in full-height layout and if enabled */}
-      {section.layout === 'full-height' && section.showMainTitleDescription && (section.mainTitle || section.mainDescription) && (
-        <div
-          className="absolute left-1/2 w-full max-w-screen-xl -translate-x-1/2 z-20 pointer-events-none"
-          style={{ top: 0, paddingTop: mainTitlePaddingTop, paddingBottom: '1.5rem' }}
-        >
-          {section.mainTitle && (
-            <h2
-              className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-center pointer-events-auto"
-              style={textStyleToCSS(section.mainTitleTextStyle)}
-            >
-              {section.mainTitle}
-            </h2>
-          )}
-          {section.mainDescription && (
-            <p
-              className="text-base sm:text-lg md:text-xl text-center pointer-events-auto"
-              style={textStyleToCSS(section.mainDescriptionTextStyle)}
-            >
-              {section.mainDescription}
-            </p>
-          )}
-        </div>
-      )}
       <div className={`relative z-10 w-full ${sectionWidth === '100vw' ? 'w-screen max-w-none' : ''} ${currentLayout.type === 'tight-wrap' ? 'py-6 md:py-12' : ''}`}>
         <div className={`${sectionWidth === '100vw' ? 'max-w-[2000px]' : 'max-w-screen-xl'} mx-auto px-4 sm:px-6`}>
+          {/* Move title/description inside the main content area for better mobile flow */}
+          {section.showMainTitleDescription && (section.mainTitle || section.mainDescription) && (
+            <div className="w-full mb-6 sm:mb-8 md:mb-12 px-4 sm:px-6">
+              <div className="max-w-4xl mx-auto">
+                {section.mainTitle && (
+                  <h2
+                    className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 leading-tight sm:leading-snug"
+                    style={textStyleToCSS(section.mainTitleTextStyle)}
+                  >
+                    {section.mainTitle}
+                  </h2>
+                )}
+                {section.mainDescription && (
+                  <p
+                    className="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed"
+                    style={textStyleToCSS(section.mainDescriptionTextStyle)}
+                  >
+                    {section.mainDescription}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
           <div 
             className={`grid gap-4 md:gap-6 w-full ${
               section.numCards === 1 ? 'grid-cols-1' : 
