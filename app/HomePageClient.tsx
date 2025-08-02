@@ -31,8 +31,9 @@ import {
   TextWithVideoLeftSection,
   TextWithVideoRightSection,
   ProductPackageLeftSection,
-  ProductPackageRightSection
-} from '@/app/custom_pages/components/sections'
+  ProductPackageRightSection,
+} 
+from '@/app/custom_pages/components/sections'
 import PageEditFab from "@/components/admin/PageEditFab"
 import PageControlsFab from "@/components/admin/PageControlsFab"
 import { toast } from "sonner"
@@ -52,17 +53,22 @@ import { Mail } from 'lucide-react';
 import CustomCodeSection from '@/app/custom_code_section/CustomCodeSection';
 import CustomCodeSectionEditor from '@/app/custom_code_section/CustomCodeSectionEditor';
 import EditableTitleSection from '@/components/sections/EditableTitleSection';
+import { MediaStoryCardSection } from '@/app/custom_pages/components/sections/MediaStoryCardSection';
 
 // Section type for home page
 type HomeSectionType =
   | { type: 'hero' }
   | { type: 'cta' }
   | { type: 'feature-card-grid' }
+  | { type: 'media-story-cards' }
+  | { type: 'divider' }
 
 const DEFAULT_SECTIONS: HomeSectionType[] = [
   { type: 'hero' },
   { type: 'cta' },
   { type: 'feature-card-grid' },
+  { type: 'media-story-cards' },
+  { type: 'divider' },
 ];
 
 // Initial sections for the home page, matching the current layout
@@ -844,7 +850,7 @@ export default function HomePageClient() {
           formMethod: 'POST',
           fields: [
             { id: 'name', name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name' },
-            { id: 'email', name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'jamescroanin@gmail.com' },
+            { id: 'email', name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'example@example.com' },
             { id: 'message', name: 'message', label: 'Message', type: 'textarea', required: true, placeholder: 'Your message' },
           ],
         };
@@ -1065,6 +1071,45 @@ export default function HomePageClient() {
           imageAlt: '',
           horizontalPadding: 0,
           verticalPadding: 0,
+        };
+        break;
+      case 'media-story-cards':
+        newSection = {
+          id,
+          type: 'media-story-cards',
+          title: 'Featured Stories',
+          cards: [
+            {
+              id: `card-${Date.now()}-1`,
+              title: 'Story 1',
+              tagline: 'A short description of story 1',
+              mediaUrl: '',
+              mediaType: 'image',
+              thumbnailUrl: '',
+              linkUrl: '#'
+            },
+            {
+              id: `card-${Date.now()}-2`,
+              title: 'Story 2',
+              tagline: 'A short description of story 2',
+              mediaUrl: '',
+              mediaType: 'image',
+              thumbnailUrl: '',
+              linkUrl: '#'
+            },
+            {
+              id: `card-${Date.now()}-3`,
+              title: 'Story 3',
+              tagline: 'A short description of story 3',
+              mediaUrl: '',
+              mediaType: 'image',
+              thumbnailUrl: '',
+              linkUrl: '#'
+            }
+          ],
+          columns: 3,
+          visible: true,
+          enableSpeech: false
         };
         break;
       case 'heading':
@@ -1353,6 +1398,34 @@ export default function HomePageClient() {
                       );
                       break;
                     }
+                    case 'media-story-cards': {
+                      const mediaStoryCardSection = section as any;
+                      renderedSection = (
+                        <div className="relative group">
+                          <MediaStoryCardSection
+                            section={mediaStoryCardSection}
+                            isEditMode={isEditMode && !previewMode}
+                            onSectionChange={s => {
+                              const newSections = [...sections];
+                              newSections[idx] = s as Section;
+                              setSections(newSections);
+                              setIsDirty(true);
+                            }}
+                            onMediaSelect={(cardId) => {
+                              setMediaDialogIdx(idx);
+                              (window as any).__mediaDialogCardId = cardId;
+                              (window as any).__mediaDialogIsThumbnail = false;
+                            }}
+                            onThumbnailSelect={(cardId) => {
+                              setMediaDialogIdx(idx);
+                              (window as any).__mediaDialogCardId = cardId;
+                              (window as any).__mediaDialogIsThumbnail = true;
+                            }}
+                          />
+                        </div>
+                      );
+                      break;
+                    }
                     case 'info-card': {
                       const infoCardSection = section as any;
                       renderedSection = (
@@ -1547,6 +1620,7 @@ export default function HomePageClient() {
                             if (card) {
                               setMediaDialogIdx(idx);
                               (window as any).__mediaDialogCardId = cardId;
+                              (window as any).__mediaDialogIsThumbnail = false;
                             }
                           }}
                           onDuplicate={(duplicatedSection) => {
@@ -1910,6 +1984,34 @@ export default function HomePageClient() {
                       );
                       break;
                     }
+                    case 'media-story-cards': {
+                      const mediaStoryCardSection = section as any;
+                      renderedSection = (
+                        <div className="relative group">
+                          <MediaStoryCardSection
+                            section={mediaStoryCardSection}
+                            isEditMode={isEditMode && !previewMode}
+                            onSectionChange={s => {
+                              const newSections = [...sections];
+                              newSections[idx] = s as Section;
+                              setSections(newSections);
+                              setIsDirty(true);
+                            }}
+                            onMediaSelect={(cardId) => {
+                              setMediaDialogIdx(idx);
+                              (window as any).__mediaDialogCardId = cardId;
+                              (window as any).__mediaDialogIsThumbnail = false;
+                            }}
+                            onThumbnailSelect={(cardId) => {
+                              setMediaDialogIdx(idx);
+                              (window as any).__mediaDialogCardId = cardId;
+                              (window as any).__mediaDialogIsThumbnail = true;
+                            }}
+                          />
+                        </div>
+                      );
+                      break;
+                    }
                     case 'info-card': {
                       const infoCardSection = section as any;
                       renderedSection = (
@@ -2104,6 +2206,7 @@ export default function HomePageClient() {
                             if (card) {
                               setMediaDialogIdx(idx);
                               (window as any).__mediaDialogCardId = cardId;
+                              (window as any).__mediaDialogIsThumbnail = false;
                             }
                           }}
                           onDuplicate={(duplicatedSection) => {
@@ -2320,6 +2423,7 @@ export default function HomePageClient() {
           onCloseAction={() => {
             setMediaDialogIdx(null);
             (window as any).__mediaDialogCardId = null;
+            (window as any).__mediaDialogIsThumbnail = null;
           }}
           onSelectAction={(url, type) => {
             setSections(prev => {
@@ -2327,7 +2431,23 @@ export default function HomePageClient() {
               const section = newSections[mediaDialogIdx];
               
               if (section) {
-                if (section.type === 'media-placeholder') {
+                if (section.type === 'media-story-cards') {
+                  const cardId = (window as any).__mediaDialogCardId;
+                  const isThumbnail = (window as any).__mediaDialogIsThumbnail;
+                  if (cardId && section.cards) {
+                    const updatedCards = section.cards.map((card: any) =>
+                      card.id === cardId
+                        ? isThumbnail
+                          ? { ...card, thumbnailUrl: url }
+                          : { ...card, mediaUrl: url, mediaType: (type === 'image' || type === 'video') ? type : 'image' }
+                        : card
+                    );
+                    newSections[mediaDialogIdx] = {
+                      ...section,
+                      cards: updatedCards,
+                    };
+                  }
+                } else if (section.type === 'media-placeholder') {
                   // Handle media-placeholder section
                   const cardId = (window as any).__mediaDialogCardId;
                   if (cardId && section.cards) {
@@ -2341,17 +2461,6 @@ export default function HomePageClient() {
                       cards: updatedCards,
                     };
                   }
-                } else if (
-                  section.type === 'media-text-left' ||
-                  section.type === 'media-text-right' ||
-                  section.type === 'text'
-                ) {
-                  // Handle other section types
-                  newSections[mediaDialogIdx] = {
-                    ...section,
-                    mediaUrl: url,
-                    mediaType: (type === 'image' || type === 'video') ? type : 'image',
-                  };
                 }
               }
               return newSections;
@@ -2359,6 +2468,7 @@ export default function HomePageClient() {
             setIsDirty(true);
             setMediaDialogIdx(null);
             (window as any).__mediaDialogCardId = null;
+            (window as any).__mediaDialogIsThumbnail = null;
           }}
         />
       )}

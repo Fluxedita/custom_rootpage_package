@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
-const OWNER_EMAIL = 'jamescroanin@gmail.com'; // Your Gmail address
+const OWNER_EMAIL = 'example@example.com'; // Your Gmail address
 
 export async function POST(req: Request) {
   try {

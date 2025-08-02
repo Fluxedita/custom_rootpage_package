@@ -140,6 +140,7 @@ export function PageControls({
     { type: 'custom-code', label: 'Custom Code', icon: Code },
     { type: 'product-package-left', label: 'Product Package (Left)', icon: LayoutGrid },
     { type: 'product-package-right', label: 'Product Package (Right)', icon: LayoutGrid },
+    { type: 'media-story-cards', label: 'Media Story Cards', icon: Image },
   ];
 
   // Sidebar customization state
@@ -150,7 +151,7 @@ export function PageControls({
   
   // Default sections that are enabled by default (most commonly used)
   const defaultEnabledSections = [
-    'hero', 'hero-responsive', 'text', 'feature', 'cta', 'gallery', 'slider', 'divider', 'info-card'
+    'hero', 'hero-responsive', 'text', 'feature', 'cta', 'gallery', 'slider', 'divider', 'info-card', 'media-story-cards'
   ];
 
   const [enabledSections, setEnabledSections] = useState<string[]>(() => {

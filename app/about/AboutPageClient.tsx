@@ -74,6 +74,18 @@ type StoryType = {
 
 const INITIAL_SECTIONS: Section[] = [
   {
+    id: 'divider-1',
+    type: 'divider',
+    visible: true,
+    enableSpeech: false,
+    style: 'solid',
+    color: '#e5e7eb',
+    thickness: '1px',
+    width: '100%',
+    margin: '2rem 0',
+    alignment: 'center',
+  },
+  {
     id: 'about-hero-responsive',
     type: 'hero-responsive',
     title: 'About Our Company',
@@ -543,7 +555,7 @@ export default function AboutPageClient() {
           formMethod: 'POST',
           fields: [
             { id: 'name', name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name' },
-            { id: 'email', name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'you@example.com' },
+            { id: 'email', name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'example@example.com' },
             { id: 'message', name: 'message', label: 'Message', type: 'textarea', required: true, placeholder: 'Your message' },
           ],
         };

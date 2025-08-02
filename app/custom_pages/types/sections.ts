@@ -1,3 +1,5 @@
+export type LinkTarget = '_self' | '_blank';
+
 export type SectionType = 
   | 'hero'
   | 'hero-responsive'
@@ -25,6 +27,7 @@ export type SectionType =
   | 'text-with-video-right'
   | 'product-package-left'
   | 'product-package-right'
+  | 'media-story-cards'
   | 'footer';
 
 export type HorizontalAlignment = 'left' | 'center' | 'right';
@@ -569,6 +572,23 @@ export interface FooterSection extends BaseSection {
   padding?: string;
 }
 
+export interface MediaStoryCardSectionType extends BaseSection {
+  type: 'media-story-cards';
+  title?: string;
+  titleAlignment?: 'left' | 'center' | 'right';
+  cards: Array<{
+    id: string;
+    mediaUrl: string;
+    mediaType: 'image' | 'video';
+    title: string;
+    tagline: string;
+    thumbnailUrl: string;
+    linkUrl?: string;
+    linkTarget?: LinkTarget;
+  }>;
+  columns?: number;
+}
+
 export type Section = 
   | HeroSection
   | HeroSectionResponsiveType
@@ -597,4 +617,5 @@ export type Section =
   | TextWithVideoRightSection
   | ProductPackageLeftSection
   | ProductPackageRightSection
-  | FooterSection; 
+  | FooterSection
+  | MediaStoryCardSectionType;

@@ -150,7 +150,7 @@ export const privacyPolicyContent = {
       title: "10. Contact Us",
       content: [
         "If you have any questions about this Privacy Policy, please contact us at:",
-        "Email: privacy@example.com",
+        "Email: example@example.com",
         "Address: [Your Company Address]",
       ],
     },
@@ -231,7 +231,7 @@ export const cookiePolicyContent = {
       title: "9. Contact Us",
       content: [
         "If you have any questions about our use of cookies or this Cookie Policy, please contact us at:",
-        "Email: privacy@example.com",
+        "Email: example@example.com",
         "Address: [Your Company Address]",
       ],
     },

@@ -42,6 +42,7 @@ import {
   ProductPackageRightSection,
   TextWithVideoLeftSection,
   TextWithVideoRightSection,
+  MediaStoryCardSection,
 } from '@/app/custom_pages/components/sections';
 import { HeroSectionResponsive } from '../components/sections/HeroSectionResponsive';
 import { cn } from '@/lib/utils';
@@ -676,7 +677,7 @@ export default function CustomPageClient() {
           formMethod: 'POST',
           fields: [
             { id: 'name', name: 'name', label: 'Name', type: 'text', required: true, placeholder: 'Your name' },
-            { id: 'email', name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'you@example.com' },
+            { id: 'email', name: 'email', label: 'Email', type: 'email', required: true, placeholder: 'example@example.com' },
             { id: 'message', name: 'message', label: 'Message', type: 'textarea', required: true, placeholder: 'Your message' },
           ],
           mediaUpload: false,
@@ -1174,6 +1175,67 @@ export default function CustomPageClient() {
           </div>
         );
         break;
+
+      case 'media-story-cards':
+        sectionComponent = (
+          <div className="relative group">
+            <MediaStoryCardSection
+              section={{
+                ...section,
+                type: 'media-story-cards' as const,
+                id: section.id || `media-story-cards-${Date.now()}`,
+                title: (section as any).title || 'Media Story Cards',
+                titleAlignment: (section as any).titleAlignment || 'center',
+                cards: (section as any).cards?.map((card: any) => ({
+                  id: card.id || `card-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                  mediaUrl: card.mediaUrl || '',
+                  mediaType: card.mediaType || 'image',
+                  title: card.title || 'Card Title',
+                  tagline: card.tagline || 'Card tagline',
+                  thumbnailUrl: card.thumbnailUrl || '',
+                  linkUrl: card.linkUrl || '#',
+                  linkTarget: card.linkTarget || '_self' as const
+                })) || [{
+                  id: `card-${Date.now()}`,
+                  mediaUrl: '',
+                  mediaType: 'image',
+                  title: 'Card Title',
+                  tagline: 'Card tagline',
+                  thumbnailUrl: '',
+                  linkUrl: '#',
+                  linkTarget: '_self' as const
+                }],
+                enableSpeech: (section as any).enableSpeech !== undefined ? (section as any).enableSpeech : false,
+                visible: section.visible !== false,
+                columns: (section as any).columns || 3
+              }}
+              isEditMode={baseProps.isEditMode}
+              onSectionChange={handleSectionChange}
+              onMediaSelect={(cardId) => {
+                // Store the card ID in a ref to use in the media dialog callback
+                const card = (section as any).cards?.find((c: any) => c.id === cardId);
+                if (card) {
+                  setMediaDialogIdx(idx);
+                  // Store the card ID in a ref to use in the media dialog callback
+                  // This would need to be implemented with useRef if needed
+                }
+              }}
+              onThumbnailSelect={(cardId) => {
+                // Handle thumbnail selection if needed
+                const card = (section as any).cards?.find((c: any) => c.id === cardId);
+                if (card) {
+                  // Handle thumbnail selection
+                }
+              }}
+            />
+            {baseProps.isEditMode && (
+              <div className="absolute top-2 right-2 z-10">
+                {renderSectionControls(section.id)}
+              </div>
+            )}
+          </div>
+        );
+        break;
       
       case 'content':
         // Handle 'content' sections as text sections
@@ -1628,6 +1690,63 @@ export default function CustomPageClient() {
               onSectionChange={handleSectionChange}
             />
             {baseProps.isEditMode && (
+              <div className="absolute top-2 right-2 z-10">
+                {renderSectionControls(section.id)}
+              </div>
+            )}
+          </div>
+        );
+        break;
+
+      case 'media-story-cards':
+        sectionComponent = (
+          <div className="relative group">
+            <MediaStoryCardSection
+              section={{
+                ...section,
+                id: section.id,
+                type: 'media-story-cards',
+                title: (section as any).title || 'Featured Stories',
+                enableSpeech: (section as any).enableSpeech !== undefined ? (section as any).enableSpeech : false,
+                cards: (section as any).cards?.map((card: any) => ({
+                  id: card.id || `card-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                  title: card.title || 'Story Title',
+                  tagline: card.tagline || 'A short description of this story',
+                  mediaUrl: card.mediaUrl || '',
+                  mediaType: card.mediaType || 'image',
+                  thumbnailUrl: card.thumbnailUrl || '',
+                  linkUrl: card.linkUrl || '#',
+                  linkTarget: card.linkTarget || '_self' as const
+                })) || [{
+                  id: `card-${Date.now()}`,
+                  title: 'Story Title',
+                  tagline: 'A short description of this story',
+                  mediaUrl: '',
+                  mediaType: 'image',
+                  thumbnailUrl: '',
+                  linkUrl: '#',
+                  linkTarget: '_self' as const
+                  }
+                ],
+                columns: (section as any).columns || 4,
+                visible: section.visible !== false
+              }}
+              isEditMode={isEditMode}
+              onSectionChange={(updatedSection) => {
+                handleSectionChange(updatedSection);
+              }}
+              onMediaSelect={(cardId: string) => {
+                // Store the card ID and section index for media selection
+                (window as any).__mediaDialogCardId = cardId;
+                (window as any).__mediaDialogSectionIdx = idx;
+                // Open media library dialog
+                const mediaLibrary = document.querySelector('[data-media-library]') as any;
+                if (mediaLibrary && mediaLibrary.openEditor) {
+                  mediaLibrary.openEditor();
+                }
+              }}
+            />
+            {isEditMode && (
               <div className="absolute top-2 right-2 z-10">
                 {renderSectionControls(section.id)}
               </div>
