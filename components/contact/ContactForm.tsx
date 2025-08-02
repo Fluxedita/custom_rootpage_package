@@ -247,7 +247,7 @@ export default function ContactForm({ isAuthenticated, user }: ContactFormProps)
                   type="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="example@example.com"
+                  placeholder="jamescroanin@gmail.com"
                   required
                 />
               </div>
